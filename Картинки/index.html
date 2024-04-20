@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Карточки и кнопки</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card" id="videoCard">
+      <h2>Видео</h2>
+      <div class="video-container">
+        <iframe id="video-player" width="100%" height="200" src="https://www.youtube.com/embed/x5Njz4BW6eI?si=ejOEzNV_uoMzxCTA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="card" id="photoCard">
+      <h2>Фото</h2>
+      <div class="image-container">
+        <img id="image-display" src="1.jpg" alt="Фото 1" width="100%">
+      </div>
+    </div>
+    <div class="card">
+      <h2>Галерея</h2>
+      <div class="gallery-container">
+        <img id="gallery-image" src="" alt="Галерея" width="100%">
+      </div>
+    </div>
+  </div>
+  <div class="buttons">
+    <button class="add">Добавить</button>
+    <button class="edit">Изменить</button>
+    <button class="delete">Удалить</button>
+  </div>
+
+  <script>
+    const addButton = document.querySelector('.add');
+    const editButton = document.querySelector('.edit');
+    const deleteButton = document.querySelector('.delete');
+    const videoCard = document.getElementById('videoCard');
+    const photoCard = document.getElementById('photoCard');
+    const galleryContainer = document.querySelector('.gallery-container');
+    const galleryImage = document.querySelector('#gallery-image');
+    const videoPlayer = document.querySelector('#video-player');
+    const imageDisplay = document.querySelector('#image-display');
+
+    let currentIndex = 0;
+    let gallery = [];
+
+
+    function showImage(index) {
+      if (gallery.length > 0) {
+        galleryImage.src = gallery[index];
+        currentIndex = index;
+      }
+    }
+
+
+    function addImage() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.addEventListener('change', () => {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          gallery.push(reader.result);
+          showImage(gallery.length - 1);
+        }
+        reader.readAsDataURL(file);
+      });
+      input.click();
+    }
+
+ 
+    function editImage() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.addEventListener('change', () => {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          gallery[currentIndex] = reader.result;
+          showImage(currentIndex);
+        }
+        reader.readAsDataURL(file);
+      });
+      input.click();
+    }
+
+  
+    function deleteImage() {
+      gallery.splice(currentIndex, 1);
+      currentIndex = 0;
+      showImage(currentIndex);
+    }
+
+    
+    videoCard.addEventListener('click', () => {
+      const firstVideo = videoCard.querySelector('iframe');
+      if (firstVideo.src.includes('x5Njz4BW6eI')) {
+        firstVideo.src = "https://www.youtube.com/embed/RJmzMMyhEkI?si=An1GXB0oBOeYAXZy";
+      } else {
+        firstVideo.src = "https://www.youtube.com/embed/x5Njz4BW6eI?si=ejOEzNV_uoMzxCTA";
+      }
+    });
+
+ 
+    photoCard.addEventListener('click', () => {
+      const firstImage = photoCard.querySelector('img');
+      if (firstImage.src.includes('1.jpg')) {
+        firstImage.src = "2.jpg";
+      } else {
+        firstImage.src = "1.jpg";
+      }
+    });
+
+ 
+    addButton.addEventListener('click', addImage);
+    editButton.addEventListener('click', editImage);
+    deleteButton.addEventListener('click', deleteImage);
+
+    galleryContainer.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % gallery.length;
+      showImage(currentIndex);
+    });
+  </script>
+</body>
+</html>
